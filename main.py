@@ -2,29 +2,26 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# IP data တွေကို သိမ်းထားမယ့် နေရာ (ယာယီမှတ်ဉာဏ်ထဲမှာ သိမ်းတာပါ)
-# တကယ်လို့ ဖုန်းအလိုက် သိမ်းချင်ရင် Dictionary သုံးလို့ရပါတယ်
+# IP တွေကို စာရင်း (List) အနေနဲ့ သိမ်းမယ်
 device_ips = {
-    "phone1": "none",
-    "phone2": "none",
-    "phone3": "none",
-    "phone4": "none",
-    "phone5": "none"
+    "phone1": [],
+    "phone2": [],
+    "phone3": [],
+    "phone4": [],
+    "phone5": []
 }
 
-@app.route('/')
-def home():
-    return "IP Control Center is Running!"
-
-# IP update လုပ်ရန် Link: /update?id=phone1&ip=1.1.1.1
 @app.route('/update', methods=['GET'])
 def update_ip():
     device_id = request.args.get('id')
     new_ip = request.args.get('ip')
     
     if device_id in device_ips:
-        device_ips[device_id] = new_ip
-        return f"Updated {device_id} to {new_ip}", 200
+        # IP အသစ်ကို စာရင်းထဲမှာ ထပ်တိုး (Append) လုပ်မယ်
+        # အကယ်၍ IP က ရှိပြီးသားဆိုရင် ထပ်မထည့်အောင် စစ်လို့ရပါတယ်
+        if new_ip not in device_ips[device_id]:
+            device_ips[device_id].append(new_ip)
+        return f"Added {new_ip} to {device_id} list", 200
     return "Invalid Device ID", 400
 
 # IP အားလုံးကို ပြန်ကြည့်ရန် Link: /get-all
