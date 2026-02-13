@@ -11,6 +11,10 @@ device_ips = {
     "phone5": []
 }
 
+@app.route('/')
+def home():
+    return "Running!"
+    
 @app.route('/update', methods=['GET'])
 def update_ip():
     device_id = request.args.get('id')
@@ -29,5 +33,12 @@ def update_ip():
 def get_all_ips():
     return jsonify(device_ips)
 
+# နေ့စဉ် Reset လုပ်ရန် သို့မဟုတ် စာရင်းရှင်းရန်: /reset-all
+@app.route('/reset-all')
+def reset_ips():
+    global device_ips
+    device_ips = {f"phone{i}": [] for i in range(1, 6)}
+    return "All IP lists have been cleared."
+    
 if __name__ == '__main__':
     app.run(debug=True)
